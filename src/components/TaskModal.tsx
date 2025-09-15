@@ -44,7 +44,7 @@ export default function TaskModal({ onSave, onClose }: TaskModalProps) {
               required
               value={formData.patient_name}
               onChange={(e) => setFormData({...formData, patient_name: e.target.value})}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
             />
           </div>
           
@@ -55,7 +55,7 @@ export default function TaskModal({ onSave, onClose }: TaskModalProps) {
             <select
               value={formData.type}
               onChange={(e) => setFormData({...formData, type: e.target.value as any})}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
             >
               <option value="study">Estudio</option>
               <option value="control">Control</option>
@@ -72,7 +72,7 @@ export default function TaskModal({ onSave, onClose }: TaskModalProps) {
               required
               value={formData.description}
               onChange={(e) => setFormData({...formData, description: e.target.value})}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
               rows={3}
             />
           </div>
@@ -86,7 +86,7 @@ export default function TaskModal({ onSave, onClose }: TaskModalProps) {
               required
               value={formData.due_date}
               onChange={(e) => setFormData({...formData, due_date: e.target.value})}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
             />
           </div>
           
@@ -97,7 +97,7 @@ export default function TaskModal({ onSave, onClose }: TaskModalProps) {
             <select
               value={formData.priority}
               onChange={(e) => setFormData({...formData, priority: e.target.value as any})}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
             >
               <option value="low">Baja</option>
               <option value="medium">Media</option>
@@ -115,7 +115,7 @@ export default function TaskModal({ onSave, onClose }: TaskModalProps) {
               required
               value={formData.assigned_doctor}
               onChange={(e) => setFormData({...formData, assigned_doctor: e.target.value})}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
             />
           </div>
           
@@ -126,7 +126,7 @@ export default function TaskModal({ onSave, onClose }: TaskModalProps) {
             <textarea
               value={formData.notes}
               onChange={(e) => setFormData({...formData, notes: e.target.value})}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
               rows={2}
             />
           </div>

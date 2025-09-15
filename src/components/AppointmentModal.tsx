@@ -43,7 +43,7 @@ export default function AppointmentModal({ onSave, onClose }: AppointmentModalPr
               required
               value={formData.patient_name}
               onChange={(e) => setFormData({...formData, patient_name: e.target.value})}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
             />
           </div>
           
@@ -56,7 +56,7 @@ export default function AppointmentModal({ onSave, onClose }: AppointmentModalPr
               required
               value={formData.doctor_name}
               onChange={(e) => setFormData({...formData, doctor_name: e.target.value})}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
             />
           </div>
           
@@ -69,7 +69,7 @@ export default function AppointmentModal({ onSave, onClose }: AppointmentModalPr
               required
               value={formData.date}
               onChange={(e) => setFormData({...formData, date: e.target.value})}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
             />
           </div>
           
@@ -82,7 +82,7 @@ export default function AppointmentModal({ onSave, onClose }: AppointmentModalPr
               required
               value={formData.time}
               onChange={(e) => setFormData({...formData, time: e.target.value})}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
             />
           </div>
           
@@ -93,7 +93,7 @@ export default function AppointmentModal({ onSave, onClose }: AppointmentModalPr
             <textarea
               value={formData.notes}
               onChange={(e) => setFormData({...formData, notes: e.target.value})}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
               rows={3}
             />
           </div>

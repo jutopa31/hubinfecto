@@ -4,7 +4,7 @@ import { useState } from 'react';
 import type { Patient } from '../types';
 
 interface PatientModalProps {
-  onSave: (patient: Omit<Patient, 'id' | 'created_at' | 'updated_at'>) => void;
+  onSave: (patient: Omit<Patient, 'id' | 'created_at' | 'updated_at'>) => Promise<void>;
   onClose: () => void;
 }
 
@@ -18,13 +18,18 @@ export default function PatientModal({ onSave, onClose }: PatientModalProps) {
     birth_date: ''
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSave({
-      ...formData,
-      birth_date: new Date(formData.birth_date)
-    });
-    onClose();
+    try {
+      await onSave({
+        ...formData,
+        birth_date: new Date(formData.birth_date)
+      });
+      onClose();
+    } catch (error) {
+      console.error('Error saving patient:', error);
+      // Optionally show an error message to the user
+    }
   };
 
   return (
@@ -41,7 +46,7 @@ export default function PatientModal({ onSave, onClose }: PatientModalProps) {
               required
               value={formData.name}
               onChange={(e) => setFormData({...formData, name: e.target.value})}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
             />
           </div>
           
@@ -54,7 +59,7 @@ export default function PatientModal({ onSave, onClose }: PatientModalProps) {
               required
               value={formData.dni}
               onChange={(e) => setFormData({...formData, dni: e.target.value})}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
             />
           </div>
           
@@ -66,7 +71,7 @@ export default function PatientModal({ onSave, onClose }: PatientModalProps) {
               type="tel"
               value={formData.phone}
               onChange={(e) => setFormData({...formData, phone: e.target.value})}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
             />
           </div>
           
@@ -78,7 +83,7 @@ export default function PatientModal({ onSave, onClose }: PatientModalProps) {
               type="email"
               value={formData.email}
               onChange={(e) => setFormData({...formData, email: e.target.value})}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
             />
           </div>
           
@@ -89,7 +94,7 @@ export default function PatientModal({ onSave, onClose }: PatientModalProps) {
             <textarea
               value={formData.address}
               onChange={(e) => setFormData({...formData, address: e.target.value})}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
               rows={2}
             />
           </div>
@@ -102,7 +107,7 @@ export default function PatientModal({ onSave, onClose }: PatientModalProps) {
               type="date"
               value={formData.birth_date}
               onChange={(e) => setFormData({...formData, birth_date: e.target.value})}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
             />
           </div>
           

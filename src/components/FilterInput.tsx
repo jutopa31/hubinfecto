@@ -15,7 +15,7 @@ export default function FilterInput({ label, value, onChange }: FilterInputProps
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={`Buscar por ${label.toLowerCase()}...`}
-        className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
       />
     </div>
   );
