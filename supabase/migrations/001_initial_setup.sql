@@ -3,10 +3,8 @@
 -- Created: 2025-09-15
 -- Description: Creates all tables, functions, and initial data for HubInfecto
 
--- Enable necessary extensions
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-CREATE EXTENSION IF NOT EXISTS "pgcrypto";
-CREATE EXTENSION IF NOT EXISTS "pg_trgm"; -- For text search
+-- Setup extensions first
+\i extensions.sql
 
 -- Create custom enum types
 CREATE TYPE appointment_status AS ENUM ('scheduled', 'arrived', 'in_progress', 'completed', 'cancelled');

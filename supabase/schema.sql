@@ -5,6 +5,7 @@
 -- Enable necessary extensions
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+CREATE EXTENSION IF NOT EXISTS "pg_trgm";
 
 -- Create custom enum types
 CREATE TYPE appointment_status AS ENUM ('scheduled', 'arrived', 'in_progress', 'completed', 'cancelled');
@@ -226,7 +227,17 @@ CREATE INDEX idx_appointments_datetime ON appointments(date, time);
 
 -- Patient indexes
 CREATE INDEX idx_patients_dni ON patients(dni);
-CREATE INDEX idx_patients_name_trgm ON patients USING gin(name gin_trgm_ops);
+-- Trigram index for fuzzy text search (requires pg_trgm extension)
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM pg_extension WHERE extname = 'pg_trgm') THEN
+        CREATE INDEX IF NOT EXISTS idx_patients_name_trgm ON patients USING gin(name gin_trgm_ops);
+    ELSE
+        -- Fallback: regular text index if pg_trgm is not available
+        CREATE INDEX IF NOT EXISTS idx_patients_name_text ON patients(name);
+        RAISE NOTICE 'pg_trgm extension not available, using regular text index instead';
+    END IF;
+END $$;
 CREATE INDEX idx_patients_created_at ON patients(created_at);
 
 -- Pending tasks indexes

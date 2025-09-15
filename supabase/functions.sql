@@ -216,7 +216,7 @@ $$ LANGUAGE plpgsql;
 -- PATIENT MANAGEMENT FUNCTIONS
 -- =====================================================
 
--- Function to search patients with fuzzy matching
+-- Function to search patients with fuzzy matching (fallback compatible)
 CREATE OR REPLACE FUNCTION search_patients(
     search_term TEXT,
     limit_count INTEGER DEFAULT 50
@@ -231,32 +231,67 @@ RETURNS TABLE (
     pending_tasks_count INTEGER,
     similarity_score REAL
 ) AS $$
+DECLARE
+    has_pg_trgm BOOLEAN;
 BEGIN
-    RETURN QUERY
-    SELECT
-        p.id,
-        p.name,
-        p.dni,
-        p.phone,
-        p.email,
-        ps.last_appointment_date,
-        ps.pending_tasks_count::INTEGER,
-        GREATEST(
-            similarity(p.name, search_term),
-            similarity(p.dni, search_term),
-            similarity(p.phone, search_term),
-            similarity(p.email, search_term)
-        ) as similarity_score
-    FROM patients p
-    LEFT JOIN patient_summary ps ON p.id = ps.id
-    WHERE
-        p.name ILIKE '%' || search_term || '%'
-        OR p.dni ILIKE '%' || search_term || '%'
-        OR p.phone ILIKE '%' || search_term || '%'
-        OR p.email ILIKE '%' || search_term || '%'
-        OR similarity(p.name, search_term) > 0.3
-    ORDER BY similarity_score DESC, p.name
-    LIMIT limit_count;
+    -- Check if pg_trgm extension is available
+    SELECT EXISTS (SELECT 1 FROM pg_extension WHERE extname = 'pg_trgm') INTO has_pg_trgm;
+
+    IF has_pg_trgm THEN
+        -- Use trigram similarity if available
+        RETURN QUERY
+        SELECT
+            p.id,
+            p.name,
+            p.dni,
+            p.phone,
+            p.email,
+            ps.last_appointment_date,
+            ps.pending_tasks_count::INTEGER,
+            GREATEST(
+                similarity(p.name, search_term),
+                similarity(COALESCE(p.dni, ''), search_term),
+                similarity(COALESCE(p.phone, ''), search_term),
+                similarity(COALESCE(p.email, ''), search_term)
+            ) as similarity_score
+        FROM patients p
+        LEFT JOIN patient_summary ps ON p.id = ps.id
+        WHERE
+            p.name ILIKE '%' || search_term || '%'
+            OR p.dni ILIKE '%' || search_term || '%'
+            OR p.phone ILIKE '%' || search_term || '%'
+            OR p.email ILIKE '%' || search_term || '%'
+            OR similarity(p.name, search_term) > 0.3
+        ORDER BY similarity_score DESC, p.name
+        LIMIT limit_count;
+    ELSE
+        -- Fallback to simple text matching
+        RETURN QUERY
+        SELECT
+            p.id,
+            p.name,
+            p.dni,
+            p.phone,
+            p.email,
+            ps.last_appointment_date,
+            ps.pending_tasks_count::INTEGER,
+            CASE
+                WHEN p.name ILIKE search_term || '%' THEN 1.0
+                WHEN p.name ILIKE '%' || search_term || '%' THEN 0.8
+                WHEN p.dni ILIKE search_term || '%' THEN 0.9
+                WHEN p.dni ILIKE '%' || search_term || '%' THEN 0.7
+                ELSE 0.5
+            END as similarity_score
+        FROM patients p
+        LEFT JOIN patient_summary ps ON p.id = ps.id
+        WHERE
+            p.name ILIKE '%' || search_term || '%'
+            OR p.dni ILIKE '%' || search_term || '%'
+            OR p.phone ILIKE '%' || search_term || '%'
+            OR p.email ILIKE '%' || search_term || '%'
+        ORDER BY similarity_score DESC, p.name
+        LIMIT limit_count;
+    END IF;
 END;
 $$ LANGUAGE plpgsql;
 

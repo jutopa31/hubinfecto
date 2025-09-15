@@ -13,11 +13,12 @@ This guide will help you set up the complete Supabase database architecture for 
    - Create a new project
    - Wait for the project to be fully initialized
 
-2. **Run the setup script**
+2. **Run the setup scripts in order**
    - Go to SQL Editor in your Supabase dashboard
-   - Copy and paste the content of `schema.sql`
-   - Click "Run" to execute
-   - Repeat for `rls-policies.sql` and `functions.sql`
+   - **First**: Run `extensions.sql` to set up required extensions
+   - **Second**: Run `schema.sql` to create all tables and indexes
+   - **Third**: Run `rls-policies.sql` to set up security policies
+   - **Fourth**: Run `functions.sql` to create business logic functions
 
 3. **Add sample data (optional)**
    - Run `migrations/002_sample_data.sql` for development/testing
@@ -42,6 +43,7 @@ supabase db push
 
 ```
 supabase/
+├── extensions.sql           # PostgreSQL extensions setup (run first)
 ├── schema.sql              # Core database schema
 ├── rls-policies.sql        # Row Level Security policies
 ├── functions.sql           # Business logic functions
@@ -185,7 +187,12 @@ Key indexes are created for:
 
 ### Common Issues
 
-1. **Migration fails**
+1. **Extension installation fails**
+   - **Error**: `operator class "gin_trgm_ops" does not exist`
+   - **Solution**: Run `extensions.sql` first, or skip pg_trgm (system works without it)
+   - **Note**: pg_trgm may not be available on all Supabase plans
+
+2. **Migration fails**
    - Ensure PostgreSQL extensions are enabled
    - Check for proper permissions
    - Verify Supabase project is fully initialized
