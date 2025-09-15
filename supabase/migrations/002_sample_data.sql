@@ -3,6 +3,13 @@
 -- Created: 2025-09-15
 -- Description: Adds sample patients, appointments, and tasks for development/demo
 
+-- Create migrations table if it doesn't exist
+CREATE TABLE IF NOT EXISTS migrations (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) UNIQUE NOT NULL,
+    executed_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
 -- Check if migration already ran
 DO $$
 BEGIN

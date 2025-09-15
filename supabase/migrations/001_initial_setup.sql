@@ -3,24 +3,63 @@
 -- Created: 2025-09-15
 -- Description: Creates all tables, functions, and initial data for HubInfecto
 
+-- HubInfecto Initial Setup Migration
+-- This migration sets up the complete database structure
+
+-- Create migrations tracking table first
+CREATE TABLE IF NOT EXISTS migrations (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) UNIQUE NOT NULL,
+    executed_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Check if this migration has already been applied
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM migrations WHERE name = '001_initial_setup') THEN
+        RAISE NOTICE 'Migration 001_initial_setup already applied, skipping...';
+        RETURN;
+    END IF;
+
+    RAISE NOTICE 'Running migration 001_initial_setup...';
+END $$;
+
 -- Setup extensions first
-\i extensions.sql
+-- Note: Run extensions.sql manually in Supabase dashboard before this migration
 
--- Create custom enum types
-CREATE TYPE appointment_status AS ENUM ('scheduled', 'arrived', 'in_progress', 'completed', 'cancelled');
-CREATE TYPE task_type AS ENUM ('estudio', 'control', 'cultivo', 'seguimiento');
-CREATE TYPE task_priority AS ENUM ('baja', 'media', 'alta', 'urgente');
-CREATE TYPE task_status AS ENUM ('pendiente', 'en_progreso', 'completada');
-CREATE TYPE note_type AS ENUM ('consultation', 'diagnosis', 'treatment', 'follow_up');
+-- Enable necessary extensions (if not already done)
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
--- Create all tables from schema.sql
-\i schema.sql
+-- Create custom enum types only if they don't exist
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'appointment_status') THEN
+        CREATE TYPE appointment_status AS ENUM ('scheduled', 'arrived', 'in_progress', 'completed', 'cancelled');
+    END IF;
 
--- Apply RLS policies
-\i rls-policies.sql
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'task_type') THEN
+        CREATE TYPE task_type AS ENUM ('estudio', 'control', 'cultivo', 'seguimiento');
+    END IF;
 
--- Create business functions
-\i functions.sql
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'task_priority') THEN
+        CREATE TYPE task_priority AS ENUM ('baja', 'media', 'alta', 'urgente');
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'task_status') THEN
+        CREATE TYPE task_status AS ENUM ('pendiente', 'en_progreso', 'completada');
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'note_type') THEN
+        CREATE TYPE note_type AS ENUM ('consultation', 'diagnosis', 'treatment', 'follow_up');
+    END IF;
+END $$;
+
+-- Note: For Supabase setup, run these files manually in the SQL editor:
+-- 1. extensions.sql
+-- 2. schema.sql
+-- 3. rls-policies.sql
+-- 4. functions.sql
 
 -- Insert initial sample data
 INSERT INTO doctors (name, license_number, specialty, email) VALUES

@@ -6,12 +6,27 @@ This guide will help you set up the complete Supabase database architecture for 
 
 ## 🚀 Quick Setup (Recommended)
 
-### Option 1: Using Supabase Dashboard
+### Option 1: One-Script Setup (Easiest)
 
 1. **Create a new Supabase project**
    - Go to [supabase.com](https://supabase.com)
    - Create a new project
    - Wait for the project to be fully initialized
+
+2. **Run the quick setup script**
+   - Go to SQL Editor in your Supabase dashboard
+   - Copy and paste the entire content of `quick-setup.sql`
+   - Click "Run" to execute
+   - This creates all tables, indexes, and sample doctors
+
+3. **Add security and functions (optional but recommended)**
+   - Run `rls-policies.sql` to set up Row Level Security
+   - Run `functions.sql` to add business logic functions
+   - Run `migrations/002_sample_data.sql` for sample patients/appointments
+
+### Option 2: Step-by-Step Setup
+
+1. **Create a new Supabase project** (same as above)
 
 2. **Run the setup scripts in order**
    - Go to SQL Editor in your Supabase dashboard
@@ -43,13 +58,14 @@ supabase db push
 
 ```
 supabase/
-├── extensions.sql           # PostgreSQL extensions setup (run first)
+├── quick-setup.sql          # 🚀 One-script setup (recommended)
+├── extensions.sql           # PostgreSQL extensions setup
 ├── schema.sql              # Core database schema
 ├── rls-policies.sql        # Row Level Security policies
 ├── functions.sql           # Business logic functions
 ├── setup-instructions.md   # This file
 └── migrations/
-    ├── 001_initial_setup.sql   # Initial migration
+    ├── 001_initial_setup.sql   # Initial migration (fixed)
     └── 002_sample_data.sql     # Sample data for development
 ```
 
