@@ -278,7 +278,7 @@ CREATE TRIGGER update_doctors_updated_at BEFORE UPDATE ON doctors FOR EACH ROW E
 CREATE TRIGGER update_appointments_updated_at BEFORE UPDATE ON appointments FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER update_pending_tasks_updated_at BEFORE UPDATE ON pending_tasks FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER update_medical_notes_updated_at BEFORE UPDATE ON medical_notes FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-CREATE TRIGGER update_daily_capacity_updated_at BEFORE UPDATE ON daily_capacity FOR EACH ROW EXECUTE FUNCTION update_daily_capacity_updated_at_column();
+CREATE TRIGGER update_daily_capacity_updated_at BEFORE UPDATE ON daily_capacity FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 -- Function to automatically update appointment status based on timestamps
 CREATE OR REPLACE FUNCTION update_appointment_status()
