@@ -4,7 +4,7 @@ import { useState } from 'react';
 import type { PendingTask } from '../types';
 
 interface TaskModalProps {
-  onSave: (task: Omit<PendingTask, 'id' | 'created_at'>) => void;
+  onSave: (task: Omit<PendingTask, 'id' | 'created_at'>) => Promise<void>;
   onClose: () => void;
 }
 
@@ -21,11 +21,11 @@ export default function TaskModal({ onSave, onClose }: TaskModalProps) {
     notes: ''
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSave({
+    await onSave({
       ...formData,
-      due_date: new Date(formData.due_date)
+      due_date: new Date(formData.due_date + 'T00:00:00.000Z')
     });
     onClose();
   };
@@ -57,10 +57,10 @@ export default function TaskModal({ onSave, onClose }: TaskModalProps) {
               onChange={(e) => setFormData({...formData, type: e.target.value as any})}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
             >
-              <option value="study">Estudio</option>
+              <option value="estudio">Estudio</option>
               <option value="control">Control</option>
-              <option value="test">Examen</option>
-              <option value="follow_up">Seguimiento</option>
+              <option value="cultivo">Cultivo</option>
+              <option value="seguimiento">Seguimiento</option>
             </select>
           </div>
           
@@ -99,10 +99,10 @@ export default function TaskModal({ onSave, onClose }: TaskModalProps) {
               onChange={(e) => setFormData({...formData, priority: e.target.value as any})}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
             >
-              <option value="low">Baja</option>
-              <option value="medium">Media</option>
-              <option value="high">Alta</option>
-              <option value="urgent">Urgente</option>
+              <option value="baja">Baja</option>
+              <option value="media">Media</option>
+              <option value="alta">Alta</option>
+              <option value="urgente">Urgente</option>
             </select>
           </div>
           

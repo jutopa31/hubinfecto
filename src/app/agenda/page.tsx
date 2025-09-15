@@ -4,11 +4,14 @@ import { useState } from 'react';
 import { format, addDays, startOfWeek, endOfWeek, isSameDay, isToday } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { useAppointments } from '../../hooks/useAppointments';
+import AppointmentModal from '../../components/AppointmentModal';
+import type { Appointment } from '../../types';
 
 export default function AgendaPage() {
-  const { appointments, toggleAppointmentStatus } = useAppointments();
+  const { appointments, addAppointment, toggleAppointmentStatus } = useAppointments();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [viewMode, setViewMode] = useState<'week' | 'month'>('week');
+  const [showAppointmentModal, setShowAppointmentModal] = useState(false);
 
   // Generar solo días laborables (lunes a viernes)
   const weekStart = startOfWeek(currentDate, { weekStartsOn: 1 });
@@ -66,6 +69,12 @@ export default function AgendaPage() {
               Agenda Semanal
             </h1>
             <div className="flex items-center space-x-4">
+              <button
+                onClick={() => setShowAppointmentModal(true)}
+                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors font-semibold"
+              >
+                + Nueva Cita
+              </button>
               <button
                 onClick={goToPreviousWeek}
                 className="bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors"
@@ -235,6 +244,17 @@ export default function AgendaPage() {
           </div>
         </div>
       </main>
+
+      {/* Modal para nueva cita */}
+      {showAppointmentModal && (
+        <AppointmentModal
+          onSave={async (appointmentData) => {
+            await addAppointment(appointmentData);
+            setShowAppointmentModal(false);
+          }}
+          onClose={() => setShowAppointmentModal(false)}
+        />
+      )}
     </div>
   );
 }

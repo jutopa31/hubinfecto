@@ -11,6 +11,20 @@ export default function TasksPage() {
   const [filter, setFilter] = useState({ patient: '', doctor: '' });
   const [showModal, setShowModal] = useState(false);
 
+  const formatDate = (date: any) => {
+    if (!date) return 'Sin fecha';
+    
+    try {
+      const dateObj = new Date(date);
+      if (isNaN(dateObj.getTime())) {
+        return 'Fecha inválida';
+      }
+      return format(dateObj, 'dd/MM/yyyy');
+    } catch (error) {
+      return 'Fecha inválida';
+    }
+  };
+
   const filteredTasks = tasks.filter(task => 
     (task.patient_name?.toLowerCase() || '').includes(filter.patient.toLowerCase()) &&
     task.assigned_doctor.toLowerCase().includes(filter.doctor.toLowerCase())
@@ -18,10 +32,10 @@ export default function TasksPage() {
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'urgent': return 'text-red-600 bg-red-100';
-      case 'high': return 'text-orange-600 bg-orange-100';
-      case 'medium': return 'text-yellow-600 bg-yellow-100';
-      case 'low': return 'text-green-600 bg-green-100';
+      case 'urgente': return 'text-red-600 bg-red-100';
+      case 'alta': return 'text-orange-600 bg-orange-100';
+      case 'media': return 'text-yellow-600 bg-yellow-100';
+      case 'baja': return 'text-green-600 bg-green-100';
       default: return 'text-gray-600 bg-gray-100';
     }
   };
@@ -111,7 +125,7 @@ export default function TasksPage() {
                       {task.priority.toUpperCase()}
                     </span>
                     <span className="text-sm text-gray-500">
-                      Vence: {format(task.due_date, 'dd/MM/yyyy')}
+                      Vence: {formatDate(task.due_date)}
                     </span>
                   </div>
                 </div>
@@ -163,9 +177,12 @@ export default function TasksPage() {
 
       {/* Modal */}
       {showModal && (
-        <TaskModal 
-          onSave={addTask} 
-          onClose={() => setShowModal(false)} 
+        <TaskModal
+          onSave={async (taskData) => {
+            await addTask(taskData);
+            setShowModal(false);
+          }}
+          onClose={() => setShowModal(false)}
         />
       )}
     </div>

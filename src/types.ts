@@ -34,7 +34,7 @@ export interface Patient {
 
 export interface PendingTask {
   id: string;
-  patient_id: string;
+  patient_id?: string;
   patient_name?: string; // Para propósitos de visualización
   type: 'estudio' | 'control' | 'cultivo' | 'seguimiento';
   description: string;
@@ -42,7 +42,7 @@ export interface PendingTask {
   priority: 'baja' | 'media' | 'alta' | 'urgente';
   status: 'pendiente' | 'en_progreso' | 'completada';
   assigned_doctor: string;
-  notes: string;
+  notes?: string;
   created_at: Date;
   completed_at?: Date;
 }

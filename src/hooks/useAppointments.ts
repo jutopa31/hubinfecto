@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { fakeAppointments } from '../lib/fakeData';
+import { supabase } from '../lib/supabase';
 import type { Appointment } from '../types';
 
 export function useAppointments() {
@@ -7,26 +7,78 @@ export function useAppointments() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // For demo: Use fake data
-    setAppointments(fakeAppointments);
-    setLoading(false);
-    
-    // For real Supabase integration (uncomment when ready):
-    // const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
-    // const fetchAppointments = async () => {
-    //   const { data } = await supabase.from('appointments').select('*');
-    //   setAppointments(data || []);
-    //   setLoading(false);
-    // };
-    // fetchAppointments();
+    const fetchAppointments = async () => {
+      try {
+        // Check if Supabase is properly configured
+        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+        const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+        if (!supabaseUrl || !supabaseKey ||
+            supabaseUrl === 'https://placeholder.supabase.co' ||
+            supabaseKey === 'placeholder-key') {
+          console.warn('Supabase not configured, using empty appointment list');
+          setAppointments([]);
+          setLoading(false);
+          return;
+        }
+
+        const { data, error } = await supabase
+          .from('appointments')
+          .select('*')
+          .order('date', { ascending: true });
+
+        if (error) {
+          console.error('Error fetching appointments:', error);
+          setAppointments([]);
+        } else {
+          setAppointments(data || []);
+        }
+      } catch (error) {
+        console.error('Error connecting to Supabase:', error);
+        setAppointments([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAppointments();
   }, []);
 
-  const addAppointment = (newAppt: Omit<Appointment, 'id'>) => {
-    const id = Math.random().toString(36).substr(2, 9);
-    setAppointments([...appointments, { ...newAppt, id }]);
-    
-    // For real Supabase integration:
-    // supabase.from('appointments').insert(newAppt);
+  const addAppointment = async (newAppt: Omit<Appointment, 'id'>) => {
+    try {
+      // Check if Supabase is properly configured
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+      const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+      if (!supabaseUrl || !supabaseKey ||
+          supabaseUrl === 'https://placeholder.supabase.co' ||
+          supabaseKey === 'placeholder-key') {
+        console.warn('Supabase not configured, appointment not saved to database');
+        // Create a temporary local appointment for demo purposes
+        const tempAppointment = {
+          ...newAppt,
+          id: Math.random().toString(36).substr(2, 9)
+        };
+        setAppointments([...appointments, tempAppointment]);
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from('appointments')
+        .insert([newAppt])
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Error adding appointment:', error);
+        return;
+      }
+
+      // Add to local state for immediate UI update
+      setAppointments([...appointments, data]);
+    } catch (error) {
+      console.error('Error saving appointment:', error);
+    }
   };
 
   const toggleAppointmentStatus = (appointmentId: string) => {
