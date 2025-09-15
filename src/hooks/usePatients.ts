@@ -9,6 +9,19 @@ export function usePatients() {
   useEffect(() => {
     const fetchPatients = async () => {
       try {
+        // Check if Supabase is properly configured
+        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+        const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+        if (!supabaseUrl || !supabaseKey ||
+            supabaseUrl === 'https://placeholder.supabase.co' ||
+            supabaseKey === 'placeholder-key') {
+          console.warn('Supabase not configured, using empty patient list');
+          setPatients([]);
+          setLoading(false);
+          return;
+        }
+
         const { data, error } = await supabase
           .from('patients')
           .select('*')
@@ -33,6 +46,25 @@ export function usePatients() {
 
   const addPatient = async (newPatient: Omit<Patient, 'id' | 'created_at' | 'updated_at'>) => {
     try {
+      // Check if Supabase is properly configured
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+      const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+      if (!supabaseUrl || !supabaseKey ||
+          supabaseUrl === 'https://placeholder.supabase.co' ||
+          supabaseKey === 'placeholder-key') {
+        console.warn('Supabase not configured, patient not saved to database');
+        // Create a temporary local patient for demo purposes
+        const tempPatient = {
+          ...newPatient,
+          id: Math.random().toString(36).substr(2, 9),
+          created_at: new Date(),
+          updated_at: new Date()
+        };
+        setPatients([tempPatient, ...patients]);
+        return;
+      }
+
       const { data, error } = await supabase
         .from('patients')
         .insert([newPatient])
