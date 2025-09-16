@@ -199,22 +199,40 @@ $$ language 'plpgsql';
 
 -- Create triggers
 DROP TRIGGER IF EXISTS update_patients_updated_at ON patients;
-CREATE TRIGGER update_patients_updated_at BEFORE UPDATE ON patients FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+CREATE TRIGGER update_patients_updated_at
+    BEFORE UPDATE ON patients
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
 
 DROP TRIGGER IF EXISTS update_doctors_updated_at ON doctors;
-CREATE TRIGGER update_doctors_updated_at BEFORE UPDATE ON doctors FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+CREATE TRIGGER update_doctors_updated_at
+    BEFORE UPDATE ON doctors
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
 
 DROP TRIGGER IF EXISTS update_appointments_updated_at ON appointments;
-CREATE TRIGGER update_appointments_updated_at BEFORE UPDATE ON appointments FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+CREATE TRIGGER update_appointments_updated_at
+    BEFORE UPDATE ON appointments
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
 
 DROP TRIGGER IF EXISTS update_pending_tasks_updated_at ON pending_tasks;
-CREATE TRIGGER update_pending_tasks_updated_at BEFORE UPDATE ON pending_tasks FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+CREATE TRIGGER update_pending_tasks_updated_at
+    BEFORE UPDATE ON pending_tasks
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
 
 DROP TRIGGER IF EXISTS update_medical_notes_updated_at ON medical_notes;
-CREATE TRIGGER update_medical_notes_updated_at BEFORE UPDATE ON medical_notes FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+CREATE TRIGGER update_medical_notes_updated_at
+    BEFORE UPDATE ON medical_notes
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
 
 DROP TRIGGER IF EXISTS update_daily_capacity_updated_at ON daily_capacity;
-CREATE TRIGGER update_daily_capacity_updated_at BEFORE UPDATE ON daily_capacity FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+CREATE TRIGGER update_daily_capacity_updated_at
+    BEFORE UPDATE ON daily_capacity
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
 
 -- =====================================================
 -- STEP 6: INITIAL DATA
